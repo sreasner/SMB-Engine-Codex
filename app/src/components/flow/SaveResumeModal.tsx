@@ -49,21 +49,23 @@ export function SaveResumeModal({ open, onClose }: SaveResumeModalProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Save and resume"
-      className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className="bg-white rounded-lg shadow-xl max-w-md w-full p-6"
+        className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
-            <Mail size={20} className="text-primary" aria-hidden />
-            <h3 className="fb-h3">{SAVE_RESUME.title}</h3>
+            <div className="h-9 w-9 rounded-xl bg-primary-50 flex items-center justify-center">
+              <Mail size={18} className="text-primary" aria-hidden />
+            </div>
+            <h3 className="fb-h3 !text-xl">{SAVE_RESUME.title}</h3>
           </div>
-          <button type="button" onClick={onClose} aria-label="Close" className="p-1 hover:bg-neutral-50 rounded">
+          <button type="button" onClick={onClose} aria-label="Close" className="p-1.5 hover:bg-neutral-50 rounded-lg transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -86,6 +88,7 @@ export function SaveResumeModal({ open, onClose }: SaveResumeModalProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
                 className="input mt-1"
+                autoFocus
               />
             </label>
             <div className="flex justify-end gap-2">
@@ -98,8 +101,8 @@ export function SaveResumeModal({ open, onClose }: SaveResumeModalProps) {
             </div>
           </form>
         ) : (
-          <div className="mt-4 space-y-3">
-            <div className="p-3 rounded-md" style={{ background: 'var(--success-bg)' }}>
+          <div className="mt-4 space-y-3 animate-fade-in-up">
+            <div className="p-3 rounded-lg" style={{ background: 'var(--success-bg)' }}>
               <p className="fb-small" style={{ color: 'var(--success)' }}>
                 <strong>Link generated.</strong> We would email this to {email}. For demo, copy it below.
               </p>
@@ -117,7 +120,7 @@ export function SaveResumeModal({ open, onClose }: SaveResumeModalProps) {
                 className="btn btn-ghost"
                 aria-label="Copy link"
               >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? <Check size={16} className="text-success" /> : <Copy size={16} />}
                 {copied ? 'Copied' : 'Copy'}
               </button>
             </div>

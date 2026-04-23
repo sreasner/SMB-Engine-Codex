@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Sparkles, Zap, Globe, Phone, Wifi, Shield, Bot, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, Globe, Phone, Wifi, Shield, Bot, CircleCheck as CheckCircle2, ChevronRight } from 'lucide-react';
 import { useBuildStore } from '@/store/useBuildStore';
 import { BUNDLE } from '@/content/copy';
 import { formatMoney, PRICES } from '@/lib/pricing';
@@ -27,10 +27,10 @@ export function BuildBundle() {
 
   return (
     <div className="relative overflow-hidden bg-[#f5f6f8] pb-32 lg:pb-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(125,211,252,0.18),transparent_28%),radial-gradient(circle_at_85%_15%,rgba(251,191,36,0.14),transparent_24%),linear-gradient(180deg,#eef2f6_0%,#f8fafb_38%,#f5f6f8_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_-5%,rgba(65,163,216,0.12),transparent_40%),radial-gradient(circle_at_85%_15%,rgba(251,191,36,0.10),transparent_24%),linear-gradient(180deg,#eef2f6_0%,#f8fafb_38%,#f5f6f8_100%)]" />
 
       <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
-        <section className="overflow-hidden rounded-[36px] border border-white/70 bg-white/78 shadow-[0_35px_80px_rgba(15,23,42,0.10)] backdrop-blur">
+        <section className="animate-fade-in-up overflow-hidden rounded-[36px] border border-white/70 bg-white/78 shadow-[0_35px_80px_rgba(15,23,42,0.10)] backdrop-blur">
           <div className={`bg-gradient-to-br ${vertical.accent} p-6 sm:p-8 lg:p-10`}>
             <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
               <div className="max-w-2xl">
@@ -49,14 +49,14 @@ export function BuildBundle() {
                       key={point}
                       className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm text-neutral-700"
                     >
-                      <CheckCircle2 size={14} className="text-neutral-950" />
+                      <CheckCircle2 size={14} className="text-secondary" />
                       {point}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <div className="rounded-[28px] border border-white/70 bg-white/76 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)]">
+              <div className="animate-slide-in-right rounded-[28px] border border-white/70 bg-white/76 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)]">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
                   How this page works
                 </p>
@@ -69,9 +69,18 @@ export function BuildBundle() {
 
                 <div className="mt-6 space-y-3 rounded-[24px] bg-neutral-950 px-5 py-5 text-white">
                   <ol className="space-y-3 text-sm text-white/88">
-                    <li>1. Review the core services below.</li>
-                    <li>2. Add any recommended extras for your business.</li>
-                    <li>3. Finalize the quote when it looks right.</li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[11px] font-bold">1</span>
+                      Review the core services below.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[11px] font-bold">2</span>
+                      Add any recommended extras for your business.
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[11px] font-bold">3</span>
+                      Finalize the quote when it looks right.
+                    </li>
                   </ol>
                   <button type="button" onClick={() => setScheduleOpen(true)} className="btn bg-white text-neutral-950 hover:bg-white/90">
                     Talk to an advisor
@@ -84,7 +93,7 @@ export function BuildBundle() {
 
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
           <div className="space-y-6">
-            <section>
+            <section className="animate-fade-in-up stagger-1">
               <div className="mb-4 flex items-end justify-between gap-4">
                 <div>
                   <p className="fb-eyebrow">{BUNDLE.eyebrow}</p>
@@ -106,7 +115,7 @@ export function BuildBundle() {
                 />
                 <BundleLineItem
                   Icon={Globe}
-                  title={`Internet · ${tierLabel(services.internet.tier)}`}
+                  title={`Internet \u00b7 ${tierLabel(services.internet.tier)}`}
                   description={`Sized for ${business.employees} people with room to grow`}
                   price={`${formatMoney(internetMonthly(services))} /mo`}
                   enabled
@@ -114,15 +123,15 @@ export function BuildBundle() {
                 />
                 <BundleLineItem
                   Icon={Phone}
-                  title={`Phones × ${services.phones.lines}`}
-                  description={services.phones.cc.type === 'none' ? 'Phone lines only' : `${ccLabel(services.phones.cc.type)} · ${services.phones.cc.agents} agents`}
+                  title={`Phones \u00d7 ${services.phones.lines}`}
+                  description={services.phones.cc.type === 'none' ? 'Phone lines only' : `${ccLabel(services.phones.cc.type)} \u00b7 ${services.phones.cc.agents} agents`}
                   price={`${formatMoney(phonesMonthly(services))} /mo`}
                   enabled
                   onEdit={() => navigate('/build/step/4')}
                 />
                 <BundleLineItem
                   Icon={Wifi}
-                  title={`Wi-Fi · ${services.wifi.aps} AP${services.wifi.aps === 1 ? '' : 's'}`}
+                  title={`Wi-Fi \u00b7 ${services.wifi.aps} AP${services.wifi.aps === 1 ? '' : 's'}`}
                   description="Guest network + staff network"
                   price={`${formatMoney(services.wifi.aps * PRICES.wifi.ap)} /mo`}
                   enabled={services.wifi.enabled}
@@ -131,7 +140,7 @@ export function BuildBundle() {
                 />
                 <BundleLineItem
                   Icon={Shield}
-                  title={`Security · ${secLabel(services.security.pack)}`}
+                  title={`Security \u00b7 ${secLabel(services.security.pack)}`}
                   description={services.security.flagged ? 'Required for your industry' : '24/7 monitoring + audits'}
                   price={`${formatMoney(PRICES.security[services.security.pack])} /mo`}
                   enabled={services.security.enabled}
@@ -142,7 +151,7 @@ export function BuildBundle() {
                 <BundleLineItem
                   Icon={Bot}
                   title="AI Pathfinder"
-                  description={services.ai.enabled ? `${services.ai.seats} seats · coaching + design` : 'Add anytime from your account'}
+                  description={services.ai.enabled ? `${services.ai.seats} seats \u00b7 coaching + design` : 'Add anytime from your account'}
                   price={services.ai.enabled ? `${formatMoney(services.ai.seats * PRICES.ai.perSeat)} /mo` : '$15/seat/mo'}
                   enabled={services.ai.enabled}
                   onToggle={(v) =>
@@ -155,7 +164,7 @@ export function BuildBundle() {
               </div>
             </section>
 
-            <section className="overflow-hidden rounded-[32px] border border-white/70 bg-white/78 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-6">
+            <section className="animate-fade-in-up stagger-2 overflow-hidden rounded-[32px] border border-white/70 bg-white/78 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-6">
               <div className="mb-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
@@ -178,7 +187,14 @@ export function BuildBundle() {
                 )}
 
                 {customFeatures.map((feature) => (
-                  <div key={feature.id} className="rounded-[28px] border border-neutral-200 bg-white px-5 py-5 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+                  <div
+                    key={feature.id}
+                    className={`group rounded-[28px] border px-5 py-5 transition-all duration-300 ${
+                      feature.enabled
+                        ? 'border-secondary-200 bg-secondary-50/50 shadow-[0_12px_32px_rgba(65,163,216,0.08)]'
+                        : 'border-neutral-200 bg-white shadow-[0_12px_32px_rgba(15,23,42,0.04)] hover:shadow-[0_12px_32px_rgba(15,23,42,0.08)]'
+                    }`}
+                  >
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <h3 className="text-lg font-semibold tracking-tight text-neutral-950">{feature.title}</h3>
@@ -210,9 +226,9 @@ export function BuildBundle() {
                             ),
                           }))
                         }
-                        className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                        className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                           feature.enabled
-                            ? 'bg-neutral-950 text-white hover:bg-neutral-800'
+                            ? 'bg-secondary text-white hover:bg-secondary-500 shadow-sm'
                             : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
                         }`}
                       >
@@ -224,7 +240,7 @@ export function BuildBundle() {
               </div>
             </section>
 
-            <section className="rounded-[32px] border border-white/70 bg-white/78 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-6">
+            <section className="animate-fade-in-up stagger-3 rounded-[32px] border border-white/70 bg-white/78 p-5 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-6">
               <div className="mb-4 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-400">
@@ -244,12 +260,13 @@ export function BuildBundle() {
                 </button>
                 <button type="button" className="btn btn-lg btn-ghost" onClick={() => navigate('/build/from-scratch')}>
                   {BUNDLE.ctaScratch}
+                  <ChevronRight size={16} />
                 </button>
               </div>
             </section>
           </div>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:block animate-fade-in-up stagger-2">
             <SummaryPanel />
           </div>
         </div>
@@ -266,7 +283,7 @@ function tierLabel(tier: '500mbps' | '1gig' | '2gig') {
 }
 
 function ccLabel(type: 'small' | 'full' | 'none') {
-  return type === 'small' ? 'Small contact center' : type === 'full' ? 'Full contact center' : '—';
+  return type === 'small' ? 'Small contact center' : type === 'full' ? 'Full contact center' : '\u2014';
 }
 
 function secLabel(pack: 'basic' | 'hipaa' | 'pci') {

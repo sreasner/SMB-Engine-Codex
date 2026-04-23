@@ -1,4 +1,4 @@
-import { ChevronUp, ChevronDown } from 'lucide-react';
+import { ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { useBuildStore } from '@/store/useBuildStore';
 import { calculateTotal, formatMoney } from '@/lib/pricing';
@@ -12,14 +12,14 @@ export function MobileCartDrawer() {
   return (
     <>
       <div
-        className={`lg:hidden fixed inset-0 z-40 transition-opacity ${
-          open ? 'bg-black/40 opacity-100' : 'pointer-events-none opacity-0'
+        className={`lg:hidden fixed inset-0 z-40 transition-all duration-300 ${
+          open ? 'bg-black/40 backdrop-blur-sm opacity-100' : 'pointer-events-none opacity-0'
         }`}
         onClick={() => setOpen(false)}
         aria-hidden
       />
       <div
-        className={`lg:hidden fixed left-0 right-0 bottom-0 z-40 bg-white rounded-t-2xl shadow-lg transition-transform ${
+        className={`lg:hidden fixed left-0 right-0 bottom-0 z-40 bg-white rounded-t-2xl shadow-xl transition-transform duration-300 ease-standard ${
           open ? 'translate-y-0' : 'translate-y-[calc(100%-64px)]'
         }`}
         role="region"
@@ -36,9 +36,11 @@ export function MobileCartDrawer() {
             <span className="font-display text-xl font-bold text-primary">{formatMoney(totals.monthly)}</span>
             <span className="fb-small">/mo</span>
           </span>
-          {open ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+          <span className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+            <ChevronUp size={18} />
+          </span>
         </button>
-        <div className={`overflow-y-auto max-h-[60vh] p-4 ${open ? 'block' : 'hidden'}`}>
+        <div className={`overflow-y-auto max-h-[60vh] p-4 transition-opacity duration-200 ${open ? 'opacity-100' : 'opacity-0 hidden'}`}>
           <SummaryPanel />
         </div>
       </div>

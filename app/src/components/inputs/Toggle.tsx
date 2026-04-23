@@ -9,7 +9,13 @@ interface ToggleProps {
 
 export function Toggle({ checked, onChange, label, description, price, disabled }: ToggleProps) {
   return (
-    <label className="flex items-start justify-between gap-3 p-3 rounded-md border border-neutral-200 bg-white cursor-pointer hover:bg-neutral-50 transition-colors">
+    <label
+      className={`flex items-start justify-between gap-3 p-3 rounded-lg border bg-white cursor-pointer transition-all duration-200 ${
+        checked
+          ? 'border-secondary-200 bg-secondary-50/30 shadow-[0_0_0_1px_rgba(65,163,216,0.1)]'
+          : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
       <span className="flex-1">
         <span className="fb-label block">{label}</span>
         {description && <span className="fb-caption block mt-0.5">{description}</span>}
@@ -28,12 +34,12 @@ export function Toggle({ checked, onChange, label, description, price, disabled 
           }
         }}
         onClick={() => !disabled && onChange(!checked)}
-        className={`relative shrink-0 w-10 h-6 rounded-pill transition-colors ${
+        className={`relative shrink-0 w-10 h-6 rounded-pill transition-colors duration-200 ${
           checked ? 'bg-secondary' : 'bg-neutral-300'
-        } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        } ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       >
         <span
-          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform ${
+          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform duration-200 ${
             checked ? 'translate-x-4' : ''
           }`}
         />

@@ -12,7 +12,8 @@ export function SummaryPanel() {
   const lines = buildLines(services);
 
   return (
-    <aside className="card p-5 lg:sticky lg:top-24 border-l-4 border-l-primary" aria-label="Your build summary">
+    <aside className="card p-5 lg:sticky lg:top-24 overflow-hidden" aria-label="Your build summary">
+      <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary via-secondary to-primary" />
       <h3 className="fb-h4 mb-3">Your build</h3>
       <div className="space-y-1 pb-3 border-b border-dashed border-neutral-200">
         <div className="flex items-baseline justify-between">
@@ -35,9 +36,11 @@ export function SummaryPanel() {
           <li className="fb-caption">Toggle a service to see pricing.</li>
         )}
         {lines.map((line) => (
-          <li key={line.key} className="flex items-center justify-between gap-3">
+          <li key={line.key} className="flex items-center justify-between gap-3 group">
             <span className="flex items-center gap-2 fb-small text-neutral-700">
-              <line.Icon size={14} aria-hidden className="text-secondary-600" />
+              <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary-50 text-secondary-600 transition-colors group-hover:bg-secondary group-hover:text-white">
+                <line.Icon size={12} aria-hidden />
+              </span>
               <span className="truncate">{line.label}</span>
             </span>
             <span className="fb-label text-primary shrink-0">{line.price}</span>
@@ -79,7 +82,7 @@ function buildLines(services: ReturnType<typeof useBuildStore.getState>['service
   if (services.phones.lines > 0) {
     lines.push({
       key: 'phones',
-      label: `Phones × ${services.phones.lines}`,
+      label: `Phones \u00d7 ${services.phones.lines}`,
       price: `${formatMoney(services.phones.lines * 20)}/mo`,
       Icon: Phone,
     });
@@ -90,7 +93,7 @@ function buildLines(services: ReturnType<typeof useBuildStore.getState>['service
     const addons = (cc.analytics ? 12 : 0) + (cc.recording ? 8 : 0);
     lines.push({
       key: 'cc',
-      label: `Agents × ${cc.agents}`,
+      label: `Agents \u00d7 ${cc.agents}`,
       price: `${formatMoney(cc.agents * (tier + addons))}/mo`,
       Icon: Headphones,
     });
@@ -98,20 +101,20 @@ function buildLines(services: ReturnType<typeof useBuildStore.getState>['service
   if (services.wifi.enabled) {
     lines.push({
       key: 'wifi',
-      label: `Wi-Fi · ${services.wifi.aps} AP${services.wifi.aps === 1 ? '' : 's'}`,
+      label: `Wi-Fi \u00b7 ${services.wifi.aps} AP${services.wifi.aps === 1 ? '' : 's'}`,
       price: `${formatMoney(services.wifi.aps * 15)}/mo`,
       Icon: Wifi,
     });
   }
   if (services.security.enabled) {
     const packPrice = services.security.pack === 'basic' ? 99 : services.security.pack === 'hipaa' ? 180 : 150;
-    const packLabel = services.security.pack === 'basic' ? 'Security · Basic' : services.security.pack === 'hipaa' ? 'Security · HIPAA' : 'Security · PCI';
+    const packLabel = services.security.pack === 'basic' ? 'Security \u00b7 Basic' : services.security.pack === 'hipaa' ? 'Security \u00b7 HIPAA' : 'Security \u00b7 PCI';
     lines.push({ key: 'security', label: packLabel, price: `${formatMoney(packPrice)}/mo`, Icon: Shield });
   }
   if (services.ai.enabled && services.ai.seats > 0) {
     lines.push({
       key: 'ai',
-      label: `AI Pathfinder · ${services.ai.seats} seat${services.ai.seats === 1 ? '' : 's'}`,
+      label: `AI Pathfinder \u00b7 ${services.ai.seats} seat${services.ai.seats === 1 ? '' : 's'}`,
       price: `${formatMoney(services.ai.seats * 15)}/mo`,
       Icon: Bot,
     });

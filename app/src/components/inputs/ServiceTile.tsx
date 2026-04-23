@@ -29,10 +29,10 @@ export function ServiceTile({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`relative w-full text-left p-4 rounded-lg border-2 transition-all ${
+      className={`relative w-full text-left p-4 rounded-xl border-2 transition-all duration-200 ${
         selected
-          ? 'border-secondary bg-secondary-50 shadow-sm'
-          : 'border-neutral-200 bg-white hover:border-neutral-300'
+          ? 'border-secondary bg-secondary-50 shadow-[0_0_0_1px_rgba(65,163,216,0.15),0_4px_12px_rgba(65,163,216,0.08)]'
+          : 'border-neutral-200 bg-white hover:border-neutral-300 hover:-translate-y-0.5 hover:shadow-sm'
       }`}
     >
       {badge && (
@@ -49,13 +49,13 @@ export function ServiceTile({
           aria-hidden
           className="absolute top-3 right-3 w-5 h-5 rounded-full bg-secondary flex items-center justify-center shadow-sm"
         >
-          <Check size={12} className="text-white" />
+          <Check size={12} className="text-white" strokeWidth={2.5} />
         </span>
       )}
       <div className="flex items-start gap-3">
         <span
-          className={`shrink-0 w-10 h-10 rounded-md flex items-center justify-center ${
-            selected ? 'bg-secondary text-white' : 'bg-neutral-100 text-primary'
+          className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+            selected ? 'bg-secondary text-white shadow-sm' : 'bg-neutral-100 text-primary'
           }`}
         >
           <Icon size={18} aria-hidden />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit3, Send, Download, Mail, Share2 } from 'lucide-react';
+import { ArrowLeft, CreditCard as Edit3, Send, Download, Mail, Share2, Check } from 'lucide-react';
 import { useBuildStore } from '@/store/useBuildStore';
 import { calculateTotal, formatMoney, estimateSavings, PRICES } from '@/lib/pricing';
 import { REVIEW } from '@/content/copy';
@@ -22,6 +22,7 @@ export function BuildReview() {
   const [submitting, setSubmitting] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const customFeatures = services.custom ?? [];
 
   useEffect(() => {
@@ -45,206 +46,224 @@ export function BuildReview() {
     navigate(`/build/confirm/${id}`);
   }
 
+  function handleCopy() {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 pb-32 lg:pb-10">
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <p className="fb-eyebrow">Step 7 · Review</p>
-          <h1 className="fb-h2 mt-1">Review your quote</h1>
-          <p className="fb-body mt-1 text-neutral-700">Everything is editable. Submit when you are ready.</p>
+    <div className="relative overflow-hidden bg-[#f5f6f8]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_-5%,rgba(65,163,216,0.08),transparent_40%),linear-gradient(180deg,#eef2f6_0%,#f8fafb_38%,#f5f6f8_100%)]" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 pb-32 lg:pb-10">
+        <div className="flex items-center justify-between mb-5 animate-fade-in-up">
+          <div>
+            <p className="fb-eyebrow">Step 7 -- Review</p>
+            <h1 className="fb-h2 mt-1">Review your quote</h1>
+            <p className="fb-body mt-1 text-neutral-700">Everything is editable. Submit when you are ready.</p>
+          </div>
+          <button type="button" className="btn btn-ghost hidden sm:inline-flex" onClick={() => navigate('/build/step/6')}>
+            <ArrowLeft size={16} /> Back
+          </button>
         </div>
-        <button type="button" className="btn btn-ghost hidden sm:inline-flex" onClick={() => navigate('/build/step/6')}>
-          <ArrowLeft size={16} /> Back
-        </button>
-      </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-5">
-          <section className="card p-5 sm:p-6">
-            <div className="flex items-center justify-between gap-3 mb-3">
-              <h2 className="fb-h3">About your business</h2>
-              <button className="btn btn-ghost text-sm" onClick={() => navigate('/build/step/1')}>
-                <Edit3 size={14} /> Edit
-              </button>
-            </div>
-            <dl className="grid grid-cols-2 gap-x-4 gap-y-2 fb-body">
-              <dt className="text-neutral-600">Business</dt>
-              <dd>{business.name || <span className="text-neutral-500">—</span>}</dd>
-              <dt className="text-neutral-600">Address</dt>
-              <dd className="truncate">{business.address || <span className="text-neutral-500">—</span>}</dd>
-              <dt className="text-neutral-600">Team</dt>
-              <dd>{business.employees} people</dd>
-              <dt className="text-neutral-600">Industry</dt>
-              <dd className="capitalize">{business.industry}</dd>
-            </dl>
-          </section>
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="space-y-5">
+            <section className="card p-5 sm:p-6 animate-fade-in-up stagger-1">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <h2 className="fb-h3">About your business</h2>
+                <button className="btn btn-ghost text-sm" onClick={() => navigate('/build/step/1')}>
+                  <Edit3 size={14} /> Edit
+                </button>
+              </div>
+              <dl className="grid grid-cols-2 gap-x-4 gap-y-2 fb-body">
+                <dt className="text-neutral-600">Business</dt>
+                <dd>{business.name || <span className="text-neutral-400">Not provided</span>}</dd>
+                <dt className="text-neutral-600">Address</dt>
+                <dd className="truncate">{business.address || <span className="text-neutral-400">Not provided</span>}</dd>
+                <dt className="text-neutral-600">Team</dt>
+                <dd>{business.employees} people</dd>
+                <dt className="text-neutral-600">Industry</dt>
+                <dd className="capitalize">{business.industry}</dd>
+              </dl>
+            </section>
 
-          <section className="card p-5 sm:p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="fb-h3">Your bundle</h2>
-              <button className="btn btn-ghost text-sm" onClick={() => navigate('/build/step/3')}>
-                <Edit3 size={14} /> Edit services
-              </button>
-            </div>
-            <ul className="divide-y divide-neutral-100">
-              <LineRow
-                title="Energy audit"
-                desc="One-time supplier switch + contract review"
-                price={services.energy.enabled ? `${formatMoney(PRICES.energy.oneTime)} once` : '—'}
-                enabled={services.energy.enabled}
-                onToggle={(v) => setServices((s) => ({ ...s, energy: { ...s.energy, enabled: v } }))}
-              />
-              <LineRow
-                title={`Internet · ${tierLabel(services.internet.tier)}`}
-                desc={internetBlurb(services.internet.failover, services.internet.staticIP)}
-                price={`${formatMoney(internetMonthly(services))} /mo`}
-                enabled
-                editHref="/build/step/3"
-                onEdit={() => navigate('/build/step/3')}
-              />
-              <LineRow
-                title={`Phones × ${services.phones.lines}`}
-                desc={
-                  services.phones.cc.type === 'none'
-                    ? 'Phone lines only'
-                    : `${ccLabel(services.phones.cc.type)} · ${services.phones.cc.agents} agents`
-                }
-                price={`${formatMoney(phonesMonthly(services))} /mo`}
-                enabled
-                editHref="/build/step/4"
-                onEdit={() => navigate('/build/step/4')}
-              />
-              <LineRow
-                title="Wi-Fi"
-                desc={`${services.wifi.aps} access point${services.wifi.aps === 1 ? '' : 's'}${services.wifi.proInstall ? ' · pro install' : ''}`}
-                price={
-                  services.wifi.enabled
-                    ? `${formatMoney(services.wifi.aps * PRICES.wifi.ap)} /mo${services.wifi.proInstall ? ` + ${formatMoney(PRICES.wifi.proInstall)} once` : ''}`
-                    : '—'
-                }
-                enabled={services.wifi.enabled}
-                onToggle={(v) => setServices((s) => ({ ...s, wifi: { ...s.wifi, enabled: v } }))}
-              />
-              <LineRow
-                title={`Security · ${secLabel(services.security.pack)}`}
-                desc={services.security.flagged ? 'Required for your industry' : '24/7 monitoring + quarterly audits'}
-                price={
-                  services.security.enabled
-                    ? `${formatMoney(PRICES.security[services.security.pack])} /mo`
-                    : '—'
-                }
-                enabled={services.security.enabled}
-                onToggle={(v) => setServices((s) => ({ ...s, security: { ...s.security, enabled: v } }))}
-                flagged={services.security.flagged}
-              />
-              <LineRow
-                title="AI Pathfinder"
-                desc={services.ai.enabled ? `${services.ai.seats} seats · readiness + coaching` : 'Add anytime from your account'}
-                price={services.ai.enabled ? `${formatMoney(services.ai.seats * PRICES.ai.perSeat)} /mo` : '—'}
-                enabled={services.ai.enabled}
-                onToggle={(v) =>
-                  setServices((s) => ({
-                    ...s,
-                    ai: { enabled: v, seats: v ? Math.max(s.ai.seats, s.ai.seats || business.employees) : 0 },
-                  }))
-                }
-              />
-              {customFeatures.map((feature) => (
+            <section className="card p-5 sm:p-6 animate-fade-in-up stagger-2">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="fb-h3">Your bundle</h2>
+                <button className="btn btn-ghost text-sm" onClick={() => navigate('/build/step/3')}>
+                  <Edit3 size={14} /> Edit services
+                </button>
+              </div>
+              <ul className="divide-y divide-neutral-100">
                 <LineRow
-                  key={feature.id}
-                  title={feature.title}
-                  desc={feature.description}
-                  price={feature.enabled ? customPrice(feature.monthly, feature.oneTime) : '—'}
-                  enabled={feature.enabled}
-                  flagged={feature.badge === 'Essential'}
+                  title="Energy audit"
+                  desc="One-time supplier switch + contract review"
+                  price={services.energy.enabled ? `${formatMoney(PRICES.energy.oneTime)} once` : '\u2014'}
+                  enabled={services.energy.enabled}
+                  onToggle={(v) => setServices((s) => ({ ...s, energy: { ...s.energy, enabled: v } }))}
+                />
+                <LineRow
+                  title={`Internet \u00b7 ${tierLabel(services.internet.tier)}`}
+                  desc={internetBlurb(services.internet.failover, services.internet.staticIP)}
+                  price={`${formatMoney(internetMonthly(services))} /mo`}
+                  enabled
+                  onEdit={() => navigate('/build/step/3')}
+                />
+                <LineRow
+                  title={`Phones \u00d7 ${services.phones.lines}`}
+                  desc={
+                    services.phones.cc.type === 'none'
+                      ? 'Phone lines only'
+                      : `${ccLabel(services.phones.cc.type)} \u00b7 ${services.phones.cc.agents} agents`
+                  }
+                  price={`${formatMoney(phonesMonthly(services))} /mo`}
+                  enabled
+                  onEdit={() => navigate('/build/step/4')}
+                />
+                <LineRow
+                  title="Wi-Fi"
+                  desc={`${services.wifi.aps} access point${services.wifi.aps === 1 ? '' : 's'}${services.wifi.proInstall ? ' \u00b7 pro install' : ''}`}
+                  price={
+                    services.wifi.enabled
+                      ? `${formatMoney(services.wifi.aps * PRICES.wifi.ap)} /mo${services.wifi.proInstall ? ` + ${formatMoney(PRICES.wifi.proInstall)} once` : ''}`
+                      : '\u2014'
+                  }
+                  enabled={services.wifi.enabled}
+                  onToggle={(v) => setServices((s) => ({ ...s, wifi: { ...s.wifi, enabled: v } }))}
+                />
+                <LineRow
+                  title={`Security \u00b7 ${secLabel(services.security.pack)}`}
+                  desc={services.security.flagged ? 'Required for your industry' : '24/7 monitoring + quarterly audits'}
+                  price={
+                    services.security.enabled
+                      ? `${formatMoney(PRICES.security[services.security.pack])} /mo`
+                      : '\u2014'
+                  }
+                  enabled={services.security.enabled}
+                  onToggle={(v) => setServices((s) => ({ ...s, security: { ...s.security, enabled: v } }))}
+                  flagged={services.security.flagged}
+                />
+                <LineRow
+                  title="AI Pathfinder"
+                  desc={services.ai.enabled ? `${services.ai.seats} seats \u00b7 readiness + coaching` : 'Add anytime from your account'}
+                  price={services.ai.enabled ? `${formatMoney(services.ai.seats * PRICES.ai.perSeat)} /mo` : '\u2014'}
+                  enabled={services.ai.enabled}
                   onToggle={(v) =>
                     setServices((s) => ({
                       ...s,
-                      custom: (s.custom ?? []).map((item) => (item.id === feature.id ? { ...item, enabled: v } : item)),
+                      ai: { enabled: v, seats: v ? Math.max(s.ai.seats, s.ai.seats || business.employees) : 0 },
                     }))
                   }
                 />
-              ))}
-            </ul>
-          </section>
-
-          {savings.total != null && savings.total > 0 && (
-            <section className="card p-5 sm:p-6 bg-primary-50 border-primary-200">
-              <h2 className="fb-h3 mb-1">{REVIEW.savingsTitle}</h2>
-              <p className="fb-small text-neutral-700 mb-3">
-                {REVIEW.savingsLead.replace('{current}', String(business.currentMonthlyBill ?? '—'))}
-              </p>
-              <SavingsBadge amount={savings.total} />
+                {customFeatures.map((feature) => (
+                  <LineRow
+                    key={feature.id}
+                    title={feature.title}
+                    desc={feature.description}
+                    price={feature.enabled ? customPrice(feature.monthly, feature.oneTime) : '\u2014'}
+                    enabled={feature.enabled}
+                    flagged={feature.badge === 'Essential'}
+                    onToggle={(v) =>
+                      setServices((s) => ({
+                        ...s,
+                        custom: (s.custom ?? []).map((item) => (item.id === feature.id ? { ...item, enabled: v } : item)),
+                      }))
+                    }
+                  />
+                ))}
+              </ul>
             </section>
-          )}
 
-          <TimelineGraphic />
-        </div>
+            {savings.total != null && savings.total > 0 && (
+              <section className="card p-5 sm:p-6 bg-primary-50 border-primary-200 animate-fade-in-up stagger-3">
+                <h2 className="fb-h3 mb-1">{REVIEW.savingsTitle}</h2>
+                <p className="fb-small text-neutral-700 mb-3">
+                  {REVIEW.savingsLead.replace('{current}', String(business.currentMonthlyBill ?? '\u2014'))}
+                </p>
+                <SavingsBadge amount={savings.total} />
+              </section>
+            )}
 
-        <div className="lg:sticky lg:top-24 h-fit space-y-4">
-          <div className="card p-5">
-            <h3 className="fb-h4 mb-3">Totals</h3>
-            <div className="flex items-baseline justify-between">
-              <span className="fb-small">Monthly</span>
-              <span className="font-display text-3xl font-bold text-primary">
-                {formatMoney(totals.monthly)}
-                <span className="fb-small font-body ml-1">/mo</span>
-              </span>
+            <div className="animate-fade-in-up stagger-4">
+              <TimelineGraphic />
             </div>
-            <div className="flex items-baseline justify-between mt-1 pb-3 border-b border-dashed border-neutral-200">
-              <span className="fb-small">One-time</span>
-              <span className="font-display text-xl font-semibold text-primary">{formatMoney(totals.oneTime)}</span>
+          </div>
+
+          <div className="lg:sticky lg:top-24 h-fit space-y-4 animate-fade-in-up stagger-2">
+            <div className="card p-5 overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-primary" />
+              <h3 className="fb-h4 mb-3">Totals</h3>
+              <div className="flex items-baseline justify-between">
+                <span className="fb-small">Monthly</span>
+                <span className="font-display text-3xl font-bold text-primary">
+                  {formatMoney(totals.monthly)}
+                  <span className="fb-small font-body ml-1">/mo</span>
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between mt-1 pb-3 border-b border-dashed border-neutral-200">
+                <span className="fb-small">One-time</span>
+                <span className="font-display text-xl font-semibold text-primary">{formatMoney(totals.oneTime)}</span>
+              </div>
+
+              <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
+                <label className="block fb-label">
+                  Email for confirmation
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="input mt-1"
+                  />
+                </label>
+                <button
+                  type="submit"
+                  disabled={submitting || !email}
+                  className="btn btn-accent w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <span className="animate-pulse-gentle">Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      {REVIEW.submit}
+                    </>
+                  )}
+                </button>
+                <p className="fb-caption">{REVIEW.fine}</p>
+              </form>
             </div>
 
-            <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
-              <label className="block fb-label">
-                Email for confirmation
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
-                  className="input mt-1"
-                />
-              </label>
-              <button
-                type="submit"
-                disabled={submitting || !email}
-                className="btn btn-accent w-full justify-center"
-              >
-                <Send size={16} />
-                {submitting ? 'Submitting…' : REVIEW.submit}
+            <div className="card p-4 space-y-1">
+              <button type="button" onClick={() => setSaveOpen(true)} className="btn btn-ghost w-full justify-start">
+                <Mail size={14} /> {REVIEW.ctaEmail}
               </button>
-              <p className="fb-caption">{REVIEW.fine}</p>
-            </form>
-          </div>
-
-          <div className="card p-4 space-y-2">
-            <button type="button" onClick={() => setSaveOpen(true)} className="btn btn-ghost w-full justify-start">
-              <Mail size={14} /> {REVIEW.ctaEmail}
-            </button>
-            <button type="button" onClick={() => window.print()} className="btn btn-ghost w-full justify-start">
-              <Download size={14} /> {REVIEW.ctaPdf}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-              }}
-              className="btn btn-ghost w-full justify-start"
-            >
-              <Share2 size={14} /> {REVIEW.ctaShare}
-            </button>
-            <button type="button" onClick={() => setScheduleOpen(true)} className="btn btn-ghost w-full justify-start">
-              {REVIEW.ctaScheduleFallback}
-            </button>
+              <button type="button" onClick={() => window.print()} className="btn btn-ghost w-full justify-start">
+                <Download size={14} /> {REVIEW.ctaPdf}
+              </button>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="btn btn-ghost w-full justify-start"
+              >
+                {copied ? <Check size={14} className="text-success" /> : <Share2 size={14} />}
+                {copied ? 'Copied!' : REVIEW.ctaShare}
+              </button>
+              <button type="button" onClick={() => setScheduleOpen(true)} className="btn btn-ghost w-full justify-start">
+                {REVIEW.ctaScheduleFallback}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <SaveResumeModal open={saveOpen} onClose={() => setSaveOpen(false)} />
-      <ScheduleCallCTA open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
+        <SaveResumeModal open={saveOpen} onClose={() => setSaveOpen(false)} />
+        <ScheduleCallCTA open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
+      </div>
     </div>
   );
 }
@@ -256,16 +275,15 @@ interface LineRowProps {
   enabled: boolean;
   onToggle?: (v: boolean) => void;
   onEdit?: () => void;
-  editHref?: string;
   flagged?: boolean;
 }
 
 function LineRow({ title, desc, price, enabled, onToggle, onEdit, flagged }: LineRowProps) {
   return (
-    <li className="py-3 flex items-start gap-3">
+    <li className="py-3 flex items-start gap-3 transition-opacity duration-200">
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className={`fb-label ${enabled ? '' : 'text-neutral-500 line-through'}`}>{title}</span>
+          <span className={`fb-label transition-all duration-200 ${enabled ? '' : 'text-neutral-500 line-through'}`}>{title}</span>
           {flagged && (
             <span className="text-[10px] uppercase tracking-wide font-semibold bg-accent text-white px-1.5 py-0.5 rounded">
               Required
@@ -275,7 +293,7 @@ function LineRow({ title, desc, price, enabled, onToggle, onEdit, flagged }: Lin
         <p className="fb-caption mt-0.5">{desc}</p>
       </div>
       <div className="text-right shrink-0">
-        <p className={`fb-label ${enabled ? 'text-primary' : 'text-neutral-400'}`}>{price}</p>
+        <p className={`fb-label transition-colors duration-200 ${enabled ? 'text-primary' : 'text-neutral-400'}`}>{price}</p>
         {onEdit && (
           <button onClick={onEdit} className="fb-caption text-secondary-600 hover:underline mt-1">
             Edit
@@ -289,10 +307,10 @@ function LineRow({ title, desc, price, enabled, onToggle, onEdit, flagged }: Lin
           aria-checked={enabled}
           aria-label={`${enabled ? 'Disable' : 'Enable'} ${title}`}
           onClick={() => onToggle(!enabled)}
-          className={`shrink-0 relative w-10 h-6 rounded-pill transition-colors ${enabled ? 'bg-secondary' : 'bg-neutral-300'}`}
+          className={`shrink-0 relative w-10 h-6 rounded-pill transition-colors duration-200 ${enabled ? 'bg-secondary' : 'bg-neutral-300'}`}
         >
           <span
-            className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform ${enabled ? 'translate-x-4' : ''}`}
+            className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform duration-200 ${enabled ? 'translate-x-4' : ''}`}
           />
         </button>
       )}
@@ -311,7 +329,7 @@ function tierLabel(tier: '500mbps' | '1gig' | '2gig') {
   return tier === '500mbps' ? '500 Mbps' : tier === '1gig' ? '1 Gig' : '2 Gig';
 }
 function ccLabel(type: 'small' | 'full' | 'none') {
-  return type === 'small' ? 'Small contact center' : type === 'full' ? 'Full contact center' : '—';
+  return type === 'small' ? 'Small contact center' : type === 'full' ? 'Full contact center' : '\u2014';
 }
 function secLabel(pack: 'basic' | 'hipaa' | 'pci') {
   return pack === 'basic' ? 'Basic' : pack === 'hipaa' ? 'HIPAA' : 'PCI';
@@ -320,7 +338,7 @@ function internetBlurb(failover: boolean, staticIP: boolean) {
   const parts: string[] = [];
   if (failover) parts.push('4G failover');
   if (staticIP) parts.push('static IP');
-  return parts.length ? parts.join(' · ') : 'Standard fiber';
+  return parts.length ? parts.join(' \u00b7 ') : 'Standard fiber';
 }
 function internetMonthly(services: ReturnType<typeof useBuildStore.getState>['services']) {
   return (

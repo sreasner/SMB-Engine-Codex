@@ -24,11 +24,17 @@ export function BundleLineItem({
   flagged,
 }: BundleLineItemProps) {
   return (
-    <div className={`card p-4 ${enabled ? '' : 'opacity-70'}`}>
+    <div
+      className={`card p-4 transition-all duration-300 ${
+        enabled
+          ? 'hover:shadow-md'
+          : 'opacity-60 hover:opacity-80'
+      }`}
+    >
       <div className="flex items-start gap-3">
         <span
-          className={`shrink-0 w-10 h-10 rounded-md flex items-center justify-center ${
-            enabled ? 'bg-secondary text-white' : 'bg-neutral-100 text-neutral-500'
+          className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+            enabled ? 'bg-secondary text-white shadow-sm' : 'bg-neutral-100 text-neutral-500'
           }`}
         >
           <Icon size={18} aria-hidden />
@@ -43,7 +49,7 @@ export function BundleLineItem({
                 </span>
               )}
             </div>
-            <span className={`fb-label ${enabled ? 'text-primary' : 'text-neutral-500'}`}>{price}</span>
+            <span className={`fb-label transition-colors duration-200 ${enabled ? 'text-primary' : 'text-neutral-500'}`}>{price}</span>
           </div>
           <p className="fb-caption mt-1">{description}</p>
           {flagNote && (
@@ -66,9 +72,9 @@ export function BundleLineItem({
             onClick={() => onToggle(!enabled)}
             className="flex items-center gap-2"
           >
-            <span className={`relative w-10 h-6 rounded-pill transition-colors ${enabled ? 'bg-secondary' : 'bg-neutral-300'}`}>
+            <span className={`relative w-10 h-6 rounded-pill transition-colors duration-200 ${enabled ? 'bg-secondary' : 'bg-neutral-300'}`}>
               <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform ${
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform duration-200 ${
                   enabled ? 'translate-x-4' : ''
                 }`}
               />
@@ -76,10 +82,10 @@ export function BundleLineItem({
             <span className="fb-caption">{enabled ? 'On' : 'Off'}</span>
           </button>
         ) : (
-          <span className="fb-caption">Core service</span>
+          <span className="fb-caption text-secondary-600 font-medium">Core service</span>
         )}
         {onEdit && (
-          <button type="button" onClick={onEdit} className="fb-small text-secondary-600 hover:underline inline-flex items-center gap-1">
+          <button type="button" onClick={onEdit} className="fb-small text-secondary-600 hover:text-secondary-700 hover:underline inline-flex items-center gap-1 transition-colors">
             <Edit3 size={12} /> Edit
           </button>
         )}

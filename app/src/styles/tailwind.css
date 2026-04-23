@@ -21,29 +21,116 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 font-semibold transition-colors;
+    @apply inline-flex items-center justify-center gap-2 font-semibold;
     @apply rounded-md px-4 py-2.5 text-sm;
+    transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .btn-primary { @apply bg-primary text-white hover:bg-primary-700; }
-  .btn-accent  { @apply bg-accent text-white hover:bg-accent-600; }
-  .btn-ghost   { @apply bg-transparent text-primary border border-primary-200 hover:bg-primary-50; }
-  .btn-lg      { @apply px-5 py-3 text-base rounded-lg; }
+  .btn-primary {
+    @apply bg-primary text-white;
+    box-shadow: 0 1px 3px rgba(25,51,89,0.2), 0 4px 12px rgba(25,51,89,0.12);
+  }
+  .btn-primary:hover {
+    @apply bg-primary-700;
+    box-shadow: 0 2px 6px rgba(25,51,89,0.28), 0 8px 20px rgba(25,51,89,0.16);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-accent {
+    @apply bg-accent text-white;
+    box-shadow: 0 1px 3px rgba(203,45,39,0.2), 0 4px 12px rgba(203,45,39,0.12);
+  }
+  .btn-accent:hover {
+    @apply bg-accent-600;
+    box-shadow: 0 2px 6px rgba(203,45,39,0.28), 0 8px 20px rgba(203,45,39,0.16);
+    transform: translateY(-1px);
+  }
+  .btn-accent:active { transform: translateY(0); }
+  .btn-ghost {
+    @apply bg-transparent text-primary border border-primary-200;
+  }
+  .btn-ghost:hover {
+    @apply bg-primary-50;
+    transform: translateY(-1px);
+  }
+  .btn-ghost:active { transform: translateY(0); }
+  .btn-lg { @apply px-5 py-3 text-base rounded-lg; }
 
   .chip {
-    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm font-medium transition-colors;
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm font-medium;
     @apply border border-neutral-200 bg-white text-neutral-700;
+    transition: all 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .chip-selected { @apply border-secondary bg-secondary-50 text-primary; }
+  .chip:hover {
+    @apply border-neutral-300 bg-neutral-50;
+    transform: translateY(-1px);
+  }
+  .chip-selected {
+    @apply border-secondary bg-secondary-50 text-primary;
+    box-shadow: 0 0 0 1px rgba(65,163,216,0.2), 0 2px 8px rgba(65,163,216,0.1);
+  }
 
   .card {
-    @apply bg-white rounded-lg border border-neutral-200 shadow-sm;
+    @apply bg-white rounded-lg border border-neutral-200;
+    box-shadow: 0 1px 3px rgba(14,29,55,0.04), 0 4px 16px rgba(14,29,55,0.04);
+    transition: box-shadow 200ms cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .input {
     @apply w-full rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-sm;
-    @apply focus-visible:border-secondary;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .input:focus-visible, .input:focus {
+    @apply border-secondary;
+    box-shadow: 0 0 0 3px rgba(65,163,216,0.12);
   }
 }
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 400ms ease both;
+}
+.animate-scale-in {
+  animation: scale-in 400ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.animate-slide-in-right {
+  animation: slide-in-right 400ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.animate-pulse-gentle {
+  animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+.stagger-6 { animation-delay: 300ms; }
+.stagger-7 { animation-delay: 350ms; }
+.stagger-8 { animation-delay: 400ms; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

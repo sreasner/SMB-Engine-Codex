@@ -46,33 +46,36 @@ export function BuildStep() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 pb-28 lg:pb-10">
-      <div className="lg:hidden mb-4">
-        <ProgressBar current={step} total={TOTAL_STEPS} />
+    <div className="relative overflow-hidden bg-[#f5f6f8]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_-5%,rgba(65,163,216,0.08),transparent_40%),linear-gradient(180deg,#eef2f6_0%,#f8fafb_38%,#f5f6f8_100%)]" />
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-6 pb-28 lg:pb-10">
+        <div className="lg:hidden mb-4">
+          <ProgressBar current={step} total={TOTAL_STEPS} />
+        </div>
+        <div className="grid gap-6 lg:grid-cols-[240px_1fr_320px]">
+          <div className="hidden lg:block">
+            <StepSidebar current={step} onJump={(n) => navigate(`/build/step/${n}`)} />
+          </div>
+          <div className="animate-fade-in-up" key={step}>
+            {copy && (
+              <StepCard eyebrow={copy.eyebrow} headline={copy.headline} subhead={copy.subhead}>
+                <StepBody />
+              </StepCard>
+            )}
+            <PageFooter
+              onBack={onBack}
+              onNext={onNext}
+              nextLabel={step === 6 ? 'Review quote' : 'Next'}
+              onSchedule={() => setScheduleOpen(true)}
+            />
+          </div>
+          <div className="hidden lg:block">
+            <SummaryPanel />
+          </div>
+        </div>
+        <MobileCartDrawer />
+        <ScheduleCallCTA open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
       </div>
-      <div className="grid gap-6 lg:grid-cols-[240px_1fr_320px]">
-        <div className="hidden lg:block">
-          <StepSidebar current={step} onJump={(n) => navigate(`/build/step/${n}`)} />
-        </div>
-        <div>
-          {copy && (
-            <StepCard eyebrow={copy.eyebrow} headline={copy.headline} subhead={copy.subhead}>
-              <StepBody />
-            </StepCard>
-          )}
-          <PageFooter
-            onBack={onBack}
-            onNext={onNext}
-            nextLabel={step === 6 ? 'Review quote' : 'Next'}
-            onSchedule={() => setScheduleOpen(true)}
-          />
-        </div>
-        <div className="hidden lg:block">
-          <SummaryPanel />
-        </div>
-      </div>
-      <MobileCartDrawer />
-      <ScheduleCallCTA open={scheduleOpen} onClose={() => setScheduleOpen(false)} />
     </div>
   );
 }

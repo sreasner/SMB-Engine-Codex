@@ -35,9 +35,11 @@ export function PathfinderChat({ onScheduleCall }: PathfinderChatProps) {
 
   if (!available) {
     return (
-      <section className="card p-5 bg-primary-50 border-primary-200">
+      <section className="rounded-2xl p-5 bg-gradient-to-br from-primary-50 to-secondary-50/50 border border-primary-200/50">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles size={16} className="text-primary" aria-hidden />
+          <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+            <Sparkles size={16} className="text-primary" aria-hidden />
+          </div>
           <h3 className="fb-h4">{BUNDLE.chatPrompt}</h3>
         </div>
         <p className="fb-body text-neutral-700 mb-3">
@@ -51,21 +53,23 @@ export function PathfinderChat({ onScheduleCall }: PathfinderChatProps) {
   }
 
   return (
-    <section className="card p-5 bg-primary-50 border-primary-200">
+    <section className="rounded-2xl p-5 bg-gradient-to-br from-primary-50 to-secondary-50/50 border border-primary-200/50">
       <div className="flex items-center gap-2 mb-1">
-        <Sparkles size={16} className="text-primary" aria-hidden />
+        <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <Sparkles size={16} className="text-primary" aria-hidden />
+        </div>
         <h3 className="fb-h4">{BUNDLE.chatPrompt}</h3>
       </div>
       <p className="fb-caption mb-3">{BUNDLE.chatExamples}</p>
 
-      <div className="bg-white rounded-md border border-neutral-200 p-3 max-h-80 overflow-y-auto space-y-3" aria-live="polite">
+      <div className="bg-white rounded-xl border border-neutral-200 p-3 max-h-80 overflow-y-auto space-y-3" aria-live="polite">
         {history.length === 0 && (
-          <p className="fb-caption">Ask a question and I'll answer in 1–3 sentences.</p>
+          <p className="fb-caption text-center py-3">Ask a question and I will answer in 1-3 sentences.</p>
         )}
         {history.map((turn, i) => (
-          <div key={i} className={turn.role === 'user' ? 'text-right' : ''}>
+          <div key={i} className={`animate-fade-in-up ${turn.role === 'user' ? 'text-right' : ''}`}>
             <span
-              className={`inline-block max-w-[85%] rounded-md px-3 py-2 text-sm ${
+              className={`inline-block max-w-[85%] rounded-xl px-3 py-2 text-sm ${
                 turn.role === 'user' ? 'bg-secondary-50 text-neutral-900' : 'bg-neutral-50 text-neutral-900'
               }`}
             >
@@ -74,9 +78,14 @@ export function PathfinderChat({ onScheduleCall }: PathfinderChatProps) {
           </div>
         ))}
         {thinking && (
-          <div>
-            <span className="inline-block rounded-md px-3 py-2 text-sm bg-neutral-50 text-neutral-500">
-              Pathfinder is thinking…
+          <div className="animate-fade-in">
+            <span className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm bg-neutral-50 text-neutral-500">
+              <span className="flex gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" style={{ animationDelay: '200ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-neutral-400 animate-pulse" style={{ animationDelay: '400ms' }} />
+              </span>
+              Thinking
             </span>
           </div>
         )}
@@ -89,12 +98,16 @@ export function PathfinderChat({ onScheduleCall }: PathfinderChatProps) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={BUNDLE.chatPlaceholder}
-          className="input flex-1"
+          className="input flex-1 !rounded-xl"
           disabled={thinking}
           aria-label="Ask the Pathfinder"
         />
-        <button type="submit" disabled={!input.trim() || thinking} className="btn btn-primary">
-          <Send size={14} /> Send
+        <button
+          type="submit"
+          disabled={!input.trim() || thinking}
+          className="btn btn-primary !rounded-xl disabled:opacity-50"
+        >
+          <Send size={14} />
         </button>
       </form>
     </section>
