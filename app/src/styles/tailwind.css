@@ -1,0 +1,60 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    background: var(--bg-muted);
+    color: var(--fg);
+    font-family: var(--font-body);
+  }
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: 8px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold transition-colors;
+    @apply rounded-md px-4 py-2.5 text-sm;
+  }
+  .btn-primary { @apply bg-primary text-white hover:bg-primary-700; }
+  .btn-accent  { @apply bg-accent text-white hover:bg-accent-600; }
+  .btn-ghost   { @apply bg-transparent text-primary border border-primary-200 hover:bg-primary-50; }
+  .btn-lg      { @apply px-5 py-3 text-base rounded-lg; }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-pill text-sm font-medium transition-colors;
+    @apply border border-neutral-200 bg-white text-neutral-700;
+  }
+  .chip-selected { @apply border-secondary bg-secondary-50 text-primary; }
+
+  .card {
+    @apply bg-white rounded-lg border border-neutral-200 shadow-sm;
+  }
+
+  .input {
+    @apply w-full rounded-md border border-neutral-200 bg-white px-3 py-2.5 text-sm;
+    @apply focus-visible:border-secondary;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body { background: #fff; }
+  header, aside, nav, .btn, .fb-mobile-drawer, [role="dialog"] { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+  main { padding: 0 !important; }
+}
