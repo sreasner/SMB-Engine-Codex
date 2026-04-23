@@ -1,19 +1,20 @@
 import { fileURLToPath } from 'node:url';
 
-// Load react plugin if available (installed locally in app/ or root node_modules)
 let reactPlugin = null;
 try {
   const mod = await import('@vitejs/plugin-react');
-  reactPlugin = mod.default ?? mod;
+  reactPlugin = (mod.default ?? mod)();
 } catch {
-  // plugin not available at config-load time; build script installs it first
+  // fall through; esbuild handles .tsx by default
 }
 
 export default {
-  plugins: reactPlugin ? [reactPlugin()] : [],
-  root: './app',
+  plugins: reactPlugin ? [reactPlugin] : [],
+  esbuild: {
+    jsx: 'automatic',
+  },
   build: {
-    outDir: '../app/dist',
+    outDir: 'dist',
     emptyOutDir: true,
   },
   resolve: {
