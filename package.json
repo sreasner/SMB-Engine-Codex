@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "cd app && npx vite",
-    "build": "cd app && npx vite build",
+    "dev": "cd app && npm install && npx vite",
+    "build": "cd app && npm install && npx vite build",
     "preview": "cd app && npx vite preview",
-    "test": "cd app && npx vitest run",
-    "test:watch": "cd app && npx vitest"
+    "test": "cd app && npm install && npx vitest run",
+    "test:watch": "cd app && npm install && npx vitest"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.5.0",
